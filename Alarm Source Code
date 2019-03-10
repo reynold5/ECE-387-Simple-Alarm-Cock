@@ -1,0 +1,56 @@
+//Code modified and adapted from https://maker.pro/arduino/projects/arduino-alarm-clock-using-real-time-clock-lcd-screen
+//Alarm clock using RTC, lcd display, toggle switch, and buzzer
+#include <DS3231.h>
+#include <LiquidCrystal.h>
+LiquidCrystal lcd(2, 3, 4, 5, 6, 7);
+DS3231  rtc(SDA, SCL);
+
+Time  t;
+int Hour;
+int Min;
+int Sec;
+
+void setup()
+{  
+  Wire.begin();
+  rtc.begin();
+  Serial.begin(9600);
+  pinMode(buzzer, OUTPUT);
+  lcd.begin(16,2);     // LCD turns on
+
+  lcd.setCursor(0,1);
+
+  lcd.print("Alarm Clock ");
+
+  delay(2000);
+}
+
+void loop()
+{
+  //Variables to set alarm time
+  t = rtc.getTime();
+  Hour = t.hour;
+  Min = t.min;
+  Sec = t.sec;
+
+  lcd.print("Time: ");
+  lcd.print(rtc.getTimeStr());
+
+  if( Hour == 11 &&  (Min == 32 || Min == 33)) //Comparing alarm time to RTC time
+  {
+    Buzzer();
+    Buzzer();
+    lcd.print("Alarm ON");
+    Buzzer();
+    Buzzer();
+  } 
+    delay(1000); 
+    }
+
+void Buzzer(){
+//Buzzer control, turns buzzer on and off based on alarm time
+digitalWrite(buzzer,HIGH);
+delay(500);
+digitalWrite(buz, LOW);
+delay(500);
+}
